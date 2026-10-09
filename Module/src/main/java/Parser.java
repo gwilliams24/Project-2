@@ -3,52 +3,50 @@ import java.util.NoSuchElementException;
 public class Parser {
 
     // helper function: checks to see what type token is
-    public static int typeCheck(String token) {
-        if (token.equals("+") || token.equals("-") || token.equals("*")
-                || token.equals("/") || token.equals("^")) {
-            return 1;
-            // fix these:
-        } else if (token.equals("0") || token.equals("1") || token.equals("2") || token.equals("3")
-                    || token.equals("4") || token.equals("5") || token.equals("6") || token.equals("7")
-                    || token.equals("8") || token.equals("9")) {
-            return 2;
-        } else {
-            throw new IllegalArgumentException("input includes a non-valid operand/operator");
-        }
+    public static boolean operatorCheck(String token) {
+        return (token.equals("+") || token.equals("-") || token.equals("*")
+                || token.equals("/") || token.equals("^"));
     }
 
 
     // Turns string input into a AST
-    public static AST parsePostfix(String input){
-        ArrayStack <AST> stack  = ArrayStack.emptyStack();
+    public static AST parsePostfix(String input) {
+        ArrayStack<AST> stack = ArrayStack.emptyStack();
         if (input == null) {
             throw new IllegalArgumentException("empty input");
         }
         String[] tokens = input.split("\\s+");
-        for (int i = 0; i< tokens.length; i += 1) {
-            if (typeCheck(tokens[i]) == 1) {
-                if (stack.size() < 2){
+        for (int i = 0; i < tokens.length; i += 1) {
+            if (operatorCheck(tokens[i])) {
+                if (stack.size() < 2) {
                     throw new IllegalArgumentException("insufficient operands");
                 } else {
-                    AST right = stack.pop();
-                    AST left = stack.pop();
-                    stack.push(new BinopNode(tokens[i], left, right));
+                    createBinopNode(tokens[i], stack);
                 }
-            } else if (typeCheck(tokens[i]) == 2) {
-                double value = Double.parseDouble(tokens[i]);
-                stack.push(new NumNode(value));
+            } else {
+                createNumNode(tokens[i], stack);
+                    if (stack.size() != 1) {
+                        throw new IllegalArgumentException("too many operands");
+                    }
+                    return stack.pop();
+                }
             }
         }
-        if (stack.size() != 1) {
-            throw new IllegalArgumentException("too many operands");
-        }
-        return stack.pop();
     }
 
-    public static void create_BinopNode(String operator, ArrayStack <AST> stack ) {
+    public static void createBinopNode(String operator, ArrayStack<AST> stack) {
         AST right = stack.pop();
         AST left = stack.pop();
         stack.push(new BinopNode(operator, left, right));
+    }
+
+    public static void createNumNode(String operand, ArrayStack<AST> stack) {
+        try {
+            double value = Double.parseDouble(operand);
+            stack.push(new NumNode(value));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid operand/operator: " + operand);
+        }
     }
 
 
