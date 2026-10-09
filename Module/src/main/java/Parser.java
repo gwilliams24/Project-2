@@ -31,8 +31,9 @@ public class Parser {
                     return stack.pop();
                 }
             }
-        }
+        return null;
     }
+
 
     public static void createBinopNode(String operator, ArrayStack<AST> stack) {
         AST right = stack.pop();
@@ -51,40 +52,45 @@ public class Parser {
 
 
     //
-    public static AST parseInFix(String input) {
+    public static AST parseInfix(String input) {
         ArrayStack <AST> expressions  = ArrayStack.emptyStack();
-        ArrayStack <String> operations = ArrayStack.emptyStack();
+        ArrayStack <String> operators = ArrayStack.emptyStack();
         if (input == null) {
             throw new IllegalArgumentException("empty input");
         }
         String[] tokens = input.split("\\s+");
         for (int i = 0; i< tokens.length; i += 1) {
             if (tokens[i].equals("(")) {
-                operations.push(tokens[i]);
+                operators.push(tokens[i]);
             }
             else if (tokens[i].equals(")")) {
                 while (!tokens[i].equals("(")){
-                    String operator = operations.pop();
-                    create_BinopNode(operator, expressions);
+                    String operator = operators.pop();
+                    createBinopNode(operator, expressions);
                 }
-                operations.pop();
+                operators.pop();
 
-            } else if (typeCheck(tokens[i]) == 1) {
+            } else if (operatorCheck(tokens[i])) {
                 if (tokens[i].equals("^")){
 
 
 
-            } else if (typeCheck(tokens[i]) == 2) {
-                double value = Double.parseDouble(tokens[i]);
-                expressions.push(new NumNode(value));
             } else {
-                throw new IllegalArgumentException();
+                createNumNode(tokens[i], expressions);
             }
         }
         return expressions.pop();
         }
     }
 
+    public static int getPrecedence(String token) {
+        return switch (token) {
+            case "^" -> 3;
+            case "*", "/" -> 2;
+            case "+", "-" -> 1;
+            default -> throw new IllegalArgumentException();
+        };
+    }
 
     // Arithmatic operations for AST
     public static double operations(AST tree){
