@@ -25,13 +25,13 @@ public class Parser {
                 }
             } else {
                 createNumNode(tokens[i], stack);
-                    if (stack.size() != 1) {
-                        throw new IllegalArgumentException("too many operands");
-                    }
-                    return stack.pop();
+            }
+            if (stack.size() != 1) {
+                throw new IllegalArgumentException("too many operands");
                 }
             }
-        return null;
+            return stack.pop();
+        }
     }
 
 
@@ -64,7 +64,7 @@ public class Parser {
                 operators.push(tokens[i]);
             }
             else if (tokens[i].equals(")")) {
-                while (!tokens[i].equals("(")){
+                while (operators.size() > 0 && !operators.peek().equals("(")){
                     String operator = operators.pop();
                     createBinopNode(operator, expressions);
                 }
