@@ -71,7 +71,8 @@ public class Parser {
                 operators.pop();
 
             } else if (operatorCheck(tokens[i])) {
-                if (tokens[i].equals("^")){
+                while (operators.size() > 0 && !operators.peek().equals("(")){
+
 
 
 
