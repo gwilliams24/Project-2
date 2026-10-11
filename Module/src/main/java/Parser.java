@@ -9,7 +9,7 @@ public class Parser {
     }
 
 
-    // Turns string input into a AST
+    // Turns string input into a AST when input is Post Fix notation
     public static AST parsePostfix(String input) {
         ArrayStack<AST> stack = ArrayStack.emptyStack();
         if (input == null) {
@@ -18,16 +18,11 @@ public class Parser {
         String[] tokens = input.split("\\s+");
         for (int i = 0; i < tokens.length; i += 1) {
             if (operatorCheck(tokens[i])) {
-                if (stack.size() < 2) {
-                    throw new IllegalArgumentException("insufficient operands");
-                } else {
-                    createBinopNode(tokens[i], stack);
-                }
+                createBinopNode(tokens[i], stack);
             } else {
                 createNumNode(tokens[i], stack);
             }
         }
-
         if (stack.size() != 1) {
             throw new IllegalArgumentException("too many operands");
             }
@@ -38,6 +33,9 @@ public class Parser {
 
 
     public static void createBinopNode(String operator, ArrayStack<AST> stack) {
+        if (stack.size() < 2){
+            throw new IllegalArgumentException("insufficient operands");
+        }
         AST right = stack.pop();
         AST left = stack.pop();
         stack.push(new BinopNode(operator, left, right));
@@ -48,7 +46,7 @@ public class Parser {
             double value = Double.parseDouble(operand);
             stack.push(new NumNode(value));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid operand/operator: " + operand);
+            throw new IllegalArgumentException("Invalid token: " + operand);
         }
     }
 
@@ -69,6 +67,9 @@ public class Parser {
                     String operator = operators.pop();
                     createBinopNode(operator, expressions);
                 }
+                if (operators.size() == 0){
+                    throw new IllegalArgumentException("mismatch close paren");
+                }
                 operators.pop();
 
             } else if (operatorCheck(tokens[i])) {
@@ -80,22 +81,28 @@ public class Parser {
         }
         while (operators.size() > 0) {
             if (operators.peek().equals("(")) {
-                throw new IllegalArgumentException("missing closing parenthesis");
+                throw new IllegalArgumentException("mismatch open paren");
             }
             createBinopNode(operators.pop(), expressions);
 
             }
+        if (expressions.size() != 1){
+            throw new IllegalArgumentException("too many operands");
+        }
 
-            return expressions.pop();
+        return expressions.pop();
     }
 
     public static int getPrecedence(String token) {
-        return switch (token) {
-            case "^" -> 3;
-            case "*", "/" -> 2;
-            case "+", "-" -> 1;
-            default -> throw new IllegalArgumentException();
-        };
+        if (token.equals("^")) {
+            return 3;
+        }
+        else if (token.equals("*") || token.equals("/")) {
+            return 2;
+        }
+        else {
+            return 1;
+        }
     }
 
     public static void token_operations(String token, ArrayStack<AST> expressions, ArrayStack<String> operators) {
