@@ -2,7 +2,7 @@ import java.util.NoSuchElementException;
 
 public class Parser {
 
-    // Turns string input into a AST when input is Post Fix notation
+    // turns string input into a AST when input is in Postfix notation
     public static AST parsePostfix(String input) {
         ArrayStack<AST> stack = ArrayStack.emptyStack();
         if (input == null) {
@@ -24,7 +24,7 @@ public class Parser {
 
     }
 
-    //
+    // turns string input into an AST when input is in Infix notation
     public static AST parseInfix(String input) {
         ArrayStack<AST> expressions = ArrayStack.emptyStack();
         ArrayStack<String> operators = ArrayStack.emptyStack();
@@ -72,7 +72,7 @@ public class Parser {
                 || token.equals("/") || token.equals("^"));
     }
 
-    // helper function: creates a BinopNode holding an operator and 2 children
+    // helper function: creates a BinopNode holding an operator and 2 AST children
     public static void createBinopNode(String operator, ArrayStack<AST> stack) {
         if (stack.size() < 2) {
             throw new IllegalArgumentException("insufficient operands");
@@ -92,7 +92,7 @@ public class Parser {
         }
     }
 
-    //
+    // helper function: gets precedence of an operator in Infix expression
     public static int getPrecedence(String token) {
         if (token.equals("^")) {
             return 3;
@@ -105,7 +105,7 @@ public class Parser {
         }
     }
 
-    //
+    // helper function: decides token push order for Infix expression
     public static void token_operations(String token, ArrayStack<AST> expressions, ArrayStack<String> operators) {
         int precedence = getPrecedence(token);
         while (operators.size() > 0 && !operators.peek().equals("(")) {
