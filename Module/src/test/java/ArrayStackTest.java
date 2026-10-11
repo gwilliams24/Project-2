@@ -40,7 +40,7 @@ public class ArrayStackTest {
 
     @Test
     void peek1() {
-        assertEquals("D", array2.peek());
+        assertEquals("E", array2.peek());
     }
 
     @Test

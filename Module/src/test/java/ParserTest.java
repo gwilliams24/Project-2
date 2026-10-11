@@ -49,4 +49,22 @@ public class ParserTest {
                 ()-> Parser.parseInfix("( 3 + a ) ^ 2 * 5"));
     }
 
+    @Test
+    void parseInfix4() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> Parser.parseInfix(null));
+    }
+
+    @Test
+    void parseInfix5() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> Parser.parseInfix(("3 + 4 ) ^ 2 * 5")));
+    }
+
+    @Test
+    void parseInfix6() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> Parser.parseInfix(("( 3 3 + 4 ) ^ 2 * 5")));
+    }
+
 }
