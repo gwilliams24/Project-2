@@ -108,20 +108,11 @@ public class Parser {
     public static void token_operations(String token, ArrayStack<AST> expressions, ArrayStack<String> operators) {
         int precedence = getPrecedence(token);
         while (operators.size() > 0 && !operators.peek().equals("(")) {
-            int next_precedence = getPrecedence(operators.peek());
-            if (precedence == 3) {
-                if (next_precedence > precedence) {
-                    createBinopNode(operators.pop(), expressions);
-                } else {
-                    break;
-                }
+            int previous_precedence = getPrecedence(operators.peek());
+            if (previous_precedence > precedence || (previous_precedence == precedence && !token.equals("^"))) {
+                createBinopNode(operators.pop(), expressions);
             } else {
-                if (next_precedence >= precedence) {
-                    createBinopNode(operators.pop(), expressions);
-                } else {
-                    break;
-                }
-
+                break;
             }
         }
         operators.push(token);
