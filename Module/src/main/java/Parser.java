@@ -85,7 +85,7 @@ public class Parser {
 
             }
             return expressions.pop();
-
+        }
     }
 
     public static int getPrecedence(String token) {
