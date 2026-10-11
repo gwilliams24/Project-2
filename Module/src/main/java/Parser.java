@@ -30,7 +30,7 @@ public class Parser {
                 throw new IllegalArgumentException("too many operands");
                 }
             }
-            return stack.pop();
+            return (AST) stack;
 
     }
 
@@ -76,7 +76,6 @@ public class Parser {
                 createNumNode(tokens[i], expressions);
             }
         }
-
         while (operators.size() > 0) {
             if (operators.peek().equals("(")) {
                 throw new IllegalArgumentException("missing closing parenthesis");
@@ -84,7 +83,7 @@ public class Parser {
             createBinopNode(operators.pop(), expressions);
 
             }
-            return expressions.pop();
+            return (AST) expressions;
 
     }
 
