@@ -26,11 +26,13 @@ public class Parser {
             } else {
                 createNumNode(tokens[i], stack);
             }
-            if (stack.size() != 1) {
-                throw new IllegalArgumentException("too many operands");
-                }
+        }
+
+        if (stack.size() != 1) {
+            throw new IllegalArgumentException("too many operands");
             }
-            return (AST) stack;
+
+        return stack.pop();
 
     }
 
@@ -83,13 +85,8 @@ public class Parser {
             createBinopNode(operators.pop(), expressions);
 
             }
-<<<<<<< HEAD
-            return expressions.pop();
-        }
-=======
-            return (AST) expressions;
 
->>>>>>> 210b9b3e5ab2b435906b4c3dbbf4059bd3706bbc
+            return expressions.pop();
     }
 
     public static int getPrecedence(String token) {
