@@ -9,10 +9,47 @@ public class ArrayStackTest {
     ArrayStack<Object> array3 = new ArrayStack<>(new String[]{"d", "c", "b", "a"}, 4);
     ArrayStack<Object> array4 = new ArrayStack<>(new String[1], 0);
     ArrayStack<Object> array5 = new ArrayStack<>(new String[]{"a", "b", "c", "d", null, null, null, null}, 4);
+    ArrayStack<Object> array6 = new ArrayStack<>(new String[]{"a", "b", "c", null}, 3);
+    ArrayStack<Object> array7 = new ArrayStack<>(new String[]{"a", "b", "c", null}, 4);
 
     @Test
     void empty_stack1() {
         assertEquals(array4, ArrayStack.emptyStack());
+    }
+
+    @Test
+    void equals1() {
+        assertEquals(array1, array1);
+    }
+
+    @Test
+    void equals2() {
+        assertNotEquals(array1, array3);
+    }
+
+    @Test
+    void equals3() {
+        assertNotEquals(array1, null);
+    }
+
+    @Test
+    void equals4() {
+        assertNotEquals(array1, "fakeArray");
+    }
+
+    @Test
+    void equals5() {
+        assertNotEquals(array1, array5);
+    }
+
+    @Test
+    void equals6() {
+        assertNotEquals(array1, array6);
+    }
+
+    @Test
+    void equals7() {
+        assertNotEquals(array1, array7);
     }
 
     @Test

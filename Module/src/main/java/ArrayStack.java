@@ -16,9 +16,7 @@ public class ArrayStack <T> {
                 }
                 for (int i = 0; i < this.array.length; i += 1) {
                     if (this.array[i] == null) {
-                        if (o.array[i] != null) {
-                            return false;
-                        }
+                        return o.array[i] == null;
                     } else if (!this.array[i].equals(o.array[i])) {
                         return false;
                     }
@@ -82,7 +80,6 @@ public class ArrayStack <T> {
     public boolean isEmpty(){
         return (size == 0);
     }
-
 
     // Returns the size of the stack (number of elements in it)
     public int size(){
