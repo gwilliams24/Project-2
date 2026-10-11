@@ -31,7 +31,7 @@ public class Parser {
                 }
             }
             return stack.pop();
-        }
+
     }
 
 
@@ -53,35 +53,39 @@ public class Parser {
 
     //
     public static AST parseInfix(String input) {
-        ArrayStack <AST> expressions  = ArrayStack.emptyStack();
-        ArrayStack <String> operators = ArrayStack.emptyStack();
+        ArrayStack<AST> expressions = ArrayStack.emptyStack();
+        ArrayStack<String> operators = ArrayStack.emptyStack();
         if (input == null) {
             throw new IllegalArgumentException("empty input");
         }
         String[] tokens = input.split("\\s+");
-        for (int i = 0; i< tokens.length; i += 1) {
+        for (int i = 0; i < tokens.length; i += 1) {
             if (tokens[i].equals("(")) {
                 operators.push(tokens[i]);
-            }
-            else if (tokens[i].equals(")")) {
-                while (operators.size() > 0 && !operators.peek().equals("(")){
+            } else if (tokens[i].equals(")")) {
+                while (operators.size() > 0 && !operators.peek().equals("(")) {
                     String operator = operators.pop();
                     createBinopNode(operator, expressions);
                 }
                 operators.pop();
 
             } else if (operatorCheck(tokens[i])) {
-                while (operators.size() > 0 && !operators.peek().equals("(")){
-
-
-
+                token_operations(tokens[i], expressions, operators);
 
             } else {
                 createNumNode(tokens[i], expressions);
             }
         }
-        return expressions.pop();
-        }
+
+        while (operators.size() > 0) {
+            if (operators.peek().equals("(")) {
+                throw new IllegalArgumentException("missing closing parenthesis");
+            }
+            createBinopNode(operators.pop(), expressions);
+
+            }
+            return expressions.pop();
+
     }
 
     public static int getPrecedence(String token) {
@@ -93,38 +97,25 @@ public class Parser {
         };
     }
 
-    // Arithmatic operations for AST
-    public static double operations(AST tree){
-        switch(tree) {
-            case NumNode result:
-                return result.value();
-            case BinopNode binop_tree:
-                double left = operations(binop_tree.left());
-                double right = operations(binop_tree.right());
-                if (binop_tree.node().equals("+")) {
-                    return left + right;
+    public static void token_operations(String token, ArrayStack<AST> expressions, ArrayStack<String> operators) {
+        int precedence = getPrecedence(token);
+        while (operators.size() > 0 && !operators.peek().equals("(")) {
+            int next_precedence = getPrecedence(operators.peek());
+            if (precedence == 3) {
+                if (next_precedence > precedence) {
+                    createBinopNode(operators.pop(), expressions);
+                } else {
+                    break;
                 }
-                else if (binop_tree.node().equals("-")) {
-                    return left - right;
+            } else {
+                if (next_precedence >= precedence) {
+                    createBinopNode(operators.pop(), expressions);
+                } else {
+                    break;
                 }
-                else if (binop_tree.node().equals("*")) {
-                    return left * right;
-                }
-                else if (binop_tree.node().equals("/")) {
-                    return left / right;
-                }
-                else {
-                    return Math.pow(left, right);
-                }
-            default:
-                throw new IllegalStateException("Unexpected value: " + tree);
+
+            }
         }
+        operators.push(token);
     }
-
-    public static double result (String input){
-        AST tree = parsePostfix(input);
-        return operations(tree);
-    }
-
-
 }
