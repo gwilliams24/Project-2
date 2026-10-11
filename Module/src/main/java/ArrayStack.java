@@ -29,14 +29,12 @@ public class ArrayStack <T> {
 
     // Double the capacity of the given array
     public void doubleCapacity() {
-        if (size == array.length) {
-            Object[] doubledArray = new Object[array.length * 2];
-            for (int index = 0; index < size; index += 1) {
-                doubledArray[index] = array[index];
-            }
-            array = doubledArray;
+        Object[] doubledArray = new Object[array.length * 2];
+        for (int index = 0; index < size; index += 1) {
+            doubledArray[index] = array[index];
         }
-    }
+        array = doubledArray;
+        }
 
     // Creates an empty ArrayStack
     public static ArrayStack emptyStack() {

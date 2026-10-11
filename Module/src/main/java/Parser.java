@@ -2,13 +2,6 @@ import java.util.NoSuchElementException;
 
 public class Parser {
 
-    // helper function: checks to see what type token is
-    public static boolean operatorCheck(String token) {
-        return (token.equals("+") || token.equals("-") || token.equals("*")
-                || token.equals("/") || token.equals("^"));
-    }
-
-
     // Turns string input into a AST when input is Post Fix notation
     public static AST parsePostfix(String input) {
         ArrayStack<AST> stack = ArrayStack.emptyStack();
@@ -31,26 +24,6 @@ public class Parser {
 
     }
 
-
-    public static void createBinopNode(String operator, ArrayStack<AST> stack) {
-        if (stack.size() < 2){
-            throw new IllegalArgumentException("insufficient operands");
-        }
-        AST right = stack.pop();
-        AST left = stack.pop();
-        stack.push(new BinopNode(operator, left, right));
-    }
-
-    public static void createNumNode(String operand, ArrayStack<AST> stack) {
-        try {
-            double value = Double.parseDouble(operand);
-            stack.push(new NumNode(value));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid token: " + operand);
-        }
-    }
-
-
     //
     public static AST parseInfix(String input) {
         ArrayStack<AST> expressions = ArrayStack.emptyStack();
@@ -67,7 +40,7 @@ public class Parser {
                     String operator = operators.pop();
                     createBinopNode(operator, expressions);
                 }
-                if (operators.size() == 0){
+                if (operators.size() == 0) {
                     throw new IllegalArgumentException("mismatch close paren");
                 }
                 operators.pop();
@@ -85,7 +58,7 @@ public class Parser {
             }
             createBinopNode(operators.pop(), expressions);
 
-            }
+        }
         if (expressions.size() != 1){
             throw new IllegalArgumentException("too many operands");
         }
@@ -93,6 +66,33 @@ public class Parser {
         return expressions.pop();
     }
 
+    // helper function: checks to see what type token is
+    public static boolean operatorCheck(String token) {
+        return (token.equals("+") || token.equals("-") || token.equals("*")
+                || token.equals("/") || token.equals("^"));
+    }
+
+    // helper function: creates a BinopNode holding an operator and 2 children
+    public static void createBinopNode(String operator, ArrayStack<AST> stack) {
+        if (stack.size() < 2) {
+            throw new IllegalArgumentException("insufficient operands");
+        }
+        AST right = stack.pop();
+        AST left = stack.pop();
+        stack.push(new BinopNode(operator, left, right));
+    }
+
+    // helper function: creates a NumNode holding an operand
+    public static void createNumNode(String operand, ArrayStack<AST> stack) {
+        try {
+            double value = Double.parseDouble(operand);
+            stack.push(new NumNode(value));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid token: " + operand);
+        }
+    }
+
+    //
     public static int getPrecedence(String token) {
         if (token.equals("^")) {
             return 3;
@@ -105,6 +105,7 @@ public class Parser {
         }
     }
 
+    //
     public static void token_operations(String token, ArrayStack<AST> expressions, ArrayStack<String> operators) {
         int precedence = getPrecedence(token);
         while (operators.size() > 0 && !operators.peek().equals("(")) {
