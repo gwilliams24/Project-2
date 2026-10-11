@@ -10,12 +10,14 @@ public class ArrayStack <T> {
     // Equals method for ArrayStack: checks to see if stacks are the same
     public boolean equals(Object other) {
         switch (other) {
-            case ArrayStack array_other:
-                if (this.size != array_other.size || this.array.length != array_other.array.length) {
+            case ArrayStack o:
+                if ((this.array.length != o.array.length) || (this.size != o.size)) {
                     return false;
                 }
                 for (int i = 0; i < this.array.length; i += 1) {
-                    if (!this.array[i].equals(array_other.array[i])) {
+                    if (this.array[i] == null) {
+                        return o.array[i] == null;
+                    } else if (!this.array[i].equals(o.array[i])) {
                         return false;
                     }
                 }
@@ -78,7 +80,6 @@ public class ArrayStack <T> {
     public boolean isEmpty(){
         return (size == 0);
     }
-
 
     // Returns the size of the stack (number of elements in it)
     public int size(){
