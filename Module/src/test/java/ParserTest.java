@@ -1,4 +1,6 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -59,9 +61,33 @@ public class ParserTest {
     }
 
     @Test
-    void parse_Infix4(){
+    void parseInfix4(){
+        assertEquals(new BinopNode("*", new NumNode(3), new BinopNode("^", new NumNode(4), new NumNode(2))),
+                Parser.parseInfix("3 * 4 ^ 2"));
+    }
+
+    @Test
+    void parseInfix5(){
         assertEquals(new BinopNode("+", new NumNode(3), new BinopNode("^", new NumNode(4), new NumNode(2))),
                 Parser.parseInfix("3 + 4 ^ 2"));
+    }
+
+    @Test
+    void parseInfix6(){
+        assertEquals(new BinopNode("+", new NumNode(3), new BinopNode("/", new NumNode(5), new NumNode(2))),
+        Parser.parseInfix("3 + 5 / 2"));
+    }
+
+    @Test
+    void parseInfix7(){
+        assertEquals(new BinopNode("-", new BinopNode("/", new NumNode (6), new NumNode (2)), new NumNode(3)),
+        Parser.parseInfix("6 / 2 - 3"));
+    }
+
+    @Test
+    void parseInfix8(){
+        assertEquals(new BinopNode("^", new NumNode(2), new BinopNode("^", new NumNode(3), new NumNode(2))),
+        Parser.parseInfix("2 ^ 3 ^ 2"));
     }
 
     @Test

@@ -41,7 +41,7 @@ public class Parser {
                     createBinopNode(operator, expressions);
                 }
                 if (operators.size() == 0) {
-                    throw new IllegalArgumentException("mismatch close paren");
+                    throw new IllegalArgumentException("mismatched close paren");
                 }
                 operators.pop();
 
@@ -54,7 +54,7 @@ public class Parser {
         }
         while (operators.size() > 0) {
             if (operators.peek().equals("(")) {
-                throw new IllegalArgumentException("mismatch open paren");
+                throw new IllegalArgumentException("mismatched open paren");
             }
             createBinopNode(operators.pop(), expressions);
 
@@ -88,7 +88,7 @@ public class Parser {
             double value = Double.parseDouble(operand);
             stack.push(new NumNode(value));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid token: " + operand);
+            throw new IllegalArgumentException("invalid token");
         }
     }
 
